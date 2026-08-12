@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>神秘塔罗占卜</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a0b2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="塔罗占卜">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Noto Serif SC", "楷体", KaiTi, serif;
+  background: radial-gradient(circle at top left, #1a0b2e, #0d0d1a);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.container {
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  color: #e0d7ff;
+}
+h1 {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #c9a8ff, #ffb3e6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(200,150,255,0.6);
+}
+.subtitle {
+  color: #aa9ec9;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+/* 音乐控制 */
+.music-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(200,150,255,0.3);
+  color: #c9a8ff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+/* 牌阵选择 */
+.spread-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.spread-btn {
+  padding: 10px 18px;
+  border-radius: 25px;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: rgba(255,255,255,0.08);
+  color: #d1c4ff;
+  border: 1px solid rgba(200,150,255,0.3);
+  transition: all 0.3s;
+}
+.spread-btn.active {
+  background: linear-gradient(135deg, #6c3faa, #c34d9b);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 0 15px rgba(180,100,255,0.5);
+}
+/* 卡片区域 */
+.card-area {
+  background: rgba(0,0,0,0.3);
+  border-radius: 30px;
+  padding: 20px 15px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.15);
+  margin-top: 10px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.single-card .card-img { font-size: 6rem; margin-bottom: 10px; filter: drop-shadow(0 0 15px rgba(255,215,0,0.6)); }
+.single-card .card-img.reversed { transform: rotate(180deg); }
+.card-name { font-size: 1.4rem; font-weight: bold; margin: 10px 0 5px; color: #f0e5ff; }
+.card-position { color: #b89fff; margin-bottom: 12px; font-size: 0.9rem; }
+.card-desc { font-size: 0.85rem; color: #cbbfef; line-height: 1.6; text-align: left; padding: 0 5px; }
+
+/* 多卡牌阵网格 */
+.multi-cards {
+  display: grid;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+}
+.mini-card {
+  background: rgba(0,0,0,0.3);
+  border-radius: 20px;
+  padding: 12px 6px;
+  text-align: center;
+}
+.mini-card .card-img { font-size: 3rem; }
+.mini-card .card-img.reversed { transform: rotate(180deg); }
+.mini-card .card-name { font-size: 0.8rem; margin: 5px 0; }
+.mini-card .card-desc { font-size: 0.7rem; text-align: center; }
+.mini-card .label { font-weight: bold; color: #c9a8ff; margin-bottom: 3px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🔮 神秘塔罗</h1>
+  <div class="subtitle">静心默念问题，然后抽牌</div>
+  
+  <!-- 背景音乐开关 -->
+  <button class="music-btn" id="musicToggle" onclick="toggleMusic()">🔇 背景音乐：关</button>
+
+  <!-- 牌阵选择 -->
+  <div class="spread-selector">
+    <button class="spread-btn active" data-spread="single">单张指引</button>
+    <button class="spread-btn" data-spread="three">过去·现在·未来</button>
+    <button class="spread-btn" data-spread="hexagram">六芒星牌阵</button>
+    <button class="spread-btn" data-spread="love">爱情关系牌阵</button>
+  </div>
+
+  <!-- 抽牌按钮 -->
+  <button class="spread-btn" style="margin-top:10px; width:100%; background:rgba(255,255,255,0.1);" id="drawBtn">
+    🃏 抽取塔罗牌
+  </button>
+
+  <!-- 牌面展示区 -->
+  <div class="card-area" id="cardArea">
+    <div style="opacity:0.6; font-size:1rem;">✨ 选择牌阵，点击抽牌 ✨</div>
+  </div>
+</div>
+
+<script>
+// ========== 音频部分 ==========
+// 使用 Web Audio API 生成简单的神秘音效（无需外部文件）
+let audioCtx = null;
+let musicGain = null;
+let musicOsc = null;
+let bgMusicPlaying = false;
+
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}
+
+// 抽牌音效：类似水晶球旋转的叮咚声
+function playDrawSound() {
+  initAudio();
+  const now = audioCtx.currentTime;
+  
+  // 两个振荡器模拟风铃
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const gain1 = audioCtx.createGain();
+  const gain2 = audioCtx.createGain();
+  
+  osc1.type = 'sine';
+  osc1.frequency.setValueAtTime(880, now);
+  osc1.frequency.exponentialRampToValueAtTime(440, now + 0.5);
+  
+  osc2.type = 'triangle';
+  osc2.frequency.setValueAtTime(1175, now + 0.1);
+  osc2.frequency.exponentialRampToValueAtTime(587, now + 0.6);
+  
+  gain1.gain.setValueAtTime(0.3, now);
+  gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+  
+  gain2.gain.setValueAtTime(0.2, now + 0.1);
+  gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+  
+  osc1.connect(gain1).connect(audioCtx.destination);
+  osc2.connect(gain2).connect(audioCtx.destination);
+  
+  osc1.start(now);
+  osc1.stop(now + 0.8);
+  osc2.start(now + 0.1);
+  osc2.stop(now + 0.9);
+}
+
+// 背景音乐：持续的低频神秘氛围
+function startBgMusic() {
+  initAudio();
+  if (bgMusicPlaying) return;
+  
+  musicGain = audioCtx.createGain();
+  musicGain.gain.value = 0.15;
+  musicGain.connect(audioCtx.destination);
+  
+  // 低频嗡嗡声
+  const oscLow = audioCtx.createOscillator();
+  oscLow.type = 'sine';
+  oscLow.frequency.value = 110;
+  const gainLow = audioCtx.createGain();
+  gainLow.gain.value = 0.1;
+  oscLow.connect(gainLow).connect(musicGain);
+  oscLow.start();
+  
+  // 高频水晶声
+  const oscHigh = audioCtx.createOscillator();
+  oscHigh.type = 'sine';
+  oscHigh.frequency.value = 440;
+  const gainHigh = audioCtx.createGain();
+  gainHigh.gain.value = 0.05;
+  oscHigh.connect(gainHigh).connect(musicGain);
+  oscHigh.start();
+  
+  // LFO调制，产生波动感
+  const lfo = audioCtx.createOscillator();
+  lfo.type = 'sine';
+  lfo.frequency.value = 0.2;
+  const lfoGain = audioCtx.createGain();
+  lfoGain.gain.value = 20;
+  lfo.connect(lfoGain).connect(oscLow.frequency);
+  lfo.start();
+  
+  bgMusicPlaying = true;
+  document.getElementById('musicToggle').textContent = '🔊 背景音乐：开';
+}
+
+function stopBgMusic() {
+  if (!bgMusicPlaying) return;
+  musicGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
+  setTimeout(() => {
+    if (audioCtx) audioCtx.close();
+    audioCtx = null;
+    bgMusicPlaying = false;
+    document.getElementById('musicToggle').textContent = '🔇 背景音乐：关';
+  }, 1100);
+}
+
+function toggleMusic() {
+  if (bgMusicPlaying) {
+    stopBgMusic();
+  } else {
+    startBgMusic();
+  }
+}
+
+// ========== 塔罗牌数据 ==========
+const deck = [
+  {n:"愚者",e:"🃏",u:"新的开始，冒险，天真，无限可能。",r:"鲁莽，轻率，计划不周。"},
+  {n:"魔术师",e:"🪄",u:"创造力，技巧，自信，成功在望。",r:"欺诈，能力不足，计划受阻。"},
+  {n:"女祭司",e:"🔮",u:"直觉，神秘，内在智慧，冷静思考。",r:"忽视直觉，情绪封闭。"},
+
