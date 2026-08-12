@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>神秘塔罗占卜</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a0b2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="塔罗占卜">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY5OAAADGElEQVR4nO3dQW7bQBBF0f//y3edRSBHQxIESIHd1azid5cE0H2kObuZfQfgO/4CwDDBAsMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDBBsMAEwQITBAtMECwwQbDABMECEwQLTBAsMEGwwATBAhMEC0wQLDDhG81/m0vkJKSPAAAAAElFTkSuQmCC">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Noto Serif SC", "楷体", KaiTi, serif;
+  background: radial-gradient(circle at top left, #1a0b2e, #0d0d1a);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.container {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  color: #e0d7ff;
+}
+h1 {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #c9a8ff, #ffb3e6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(200,150,255,0.6);
+}
+.subtitle {
+  color: #aa9ec9;
+  margin-bottom: 30px;
+  font-size: 0.95rem;
+}
+.controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+.btn {
+  padding: 12px 28px;
+  border-radius: 30px;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  background: rgba(255,255,255,0.08);
+  color: #d1c4ff;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(200,150,255,0.3);
+  transition: all 0.3s;
+}
+.btn.active {
+  background: linear-gradient(135deg, #6c3faa, #c34d9b);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 0 20px rgba(180,100,255,0.5);
+}
+.btn:hover { transform: scale(1.03); }
+.card-area {
+  background: rgba(0,0,0,0.3);
+  border-radius: 30px;
+  padding: 25px 20px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.15);
+  margin-top: 10px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.card-img {
+  font-size: 6rem;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 15px rgba(255,215,0,0.6));
+  transition: transform 0.5s ease;
+}
+.card-img.reversed {
+  transform: rotate(180deg);
+}
+.card-name {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin: 10px 0 5px;
+  color: #f0e5ff;
+}
+.card-position {
+  font-size: 0.9rem;
+  color: #b89fff;
+  margin-bottom: 15px;
+}
+.card-desc {
+  font-size: 0.9rem;
+  color: #cbbfef;
+  line-height: 1.6;
+  text-align: left;
+  padding: 0 10px;
+}
+.three-cards {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+.mini-card {
+  flex: 1 1 100px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 20px;
+  padding: 15px 8px;
+  text-align: center;
+  min-width: 90px;
+}
+.mini-card .card-img {
+  font-size: 3.5rem;
+}
+.mini-card .card-name {
+  font-size: 0.8rem;
+  margin: 5px 0;
+}
+.mini-card .card-desc {
+  font-size: 0.7rem;
+  text-align: center;
+}
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🔮 神秘塔罗</h1>
+  <div class="subtitle">静心默念问题，然后抽牌</div>
+  <div class="controls">
+    <button class="btn active" onclick="setMode('single')">单张指引</button>
+    <button class="btn" id="threeBtn" onclick="setMode('three')">过去·现在·未来</button>
+  </div>
+  <div class="card-area" id="cardArea">
+    <div style="opacity:0.6; font-size:1.1rem;">✨ 点击下方按钮抽牌 ✨</div>
+  </div>
+  <button class="btn" style="margin-top:20px; width:100%; background:rgba(255,255,255,0.1);" onclick="drawCards()">
+    🃏 抽取塔罗牌
+  </button>
+</div>
+<script>
+const tarotDeck = [
+  { name:"愚者", emoji:"🃏", upright:"新的开始，冒险，天真，无限可能。", reversed:"鲁莽，轻率，计划不周，错失机会。" },
+  { name:"魔术师", emoji:"🪄", upright:"创造力，技巧，自信，成功在望。", reversed:"欺诈，能力不足，计划受阻。" },
+  { name:"女祭司", emoji:"🔮", upright:"直觉，神秘，内在智慧，冷静思考。", reversed:"忽视直觉，情绪封闭，隐藏的秘密。" },
+  { name:"皇后", emoji:"👑", upright:"丰收，母性，舒适，创造力。", reversed:"依赖，缺乏安全感，创造受阻。" },
+  { name:"皇帝", emoji:"🏰", upright:"权威，稳定，领导力，秩序。", reversed:"专制，缺乏自律，权力滥用。" },
+  { name:"教皇", emoji:"⛪", upright:"传统，信仰，精神指引，学习。", reversed:"教条，叛逆，错误建议。" },
+  { name:"恋人", emoji:"💞", upright:"爱情，和谐，选择，关系深化。", reversed:"分离，冲突，不健康的关系。" },
+  { name:"战车", emoji:"🏇", upright:"胜利，决心，控制力，前进。", reversed:"失控，挫败，方向迷失。" },
+  { name:"力量", emoji:"🦁", upright:"勇气，内在力量，耐心，克服恐惧。", reversed:"软弱，自我怀疑，冲动。" },
+  { name:"隐士", emoji:"🏮", upright:"内省，孤独，寻求真理，沉思。", reversed:"孤立，逃避，过度保守。" },
+  { name:"命运之轮", emoji:"🎡", upright:"命运转折，机遇，周期变化，幸运。", reversed:"厄运，意外，循环停滞。" },
+  { name:"正义", emoji:"⚖️", upright:"公平，责任，真相，法律事务。", reversed:"不公，逃避责任，偏见。" },
+  { name:"倒吊人", emoji:"🪢", upright:"牺牲，换位思考，等待，灵性成长。", reversed:"停滞，无谓牺牲，固执。" },
+  { name:"死神", emoji:"💀", upright:"结束，转变，重生，放下过去。", reversed:"抗拒改变，恐惧，停滞不前。" },
+  { name:"节制", emoji:"🕊️", upright:"平衡，调和，耐心，自我控制。", reversed:"极端，缺乏协调，放纵。" },
+  { name:"恶魔", emoji:"👹", upright:"欲望，束缚，物质主义，阴影自我。", reversed:"挣脱，觉醒，远离诱惑。" },
+  { name:"高塔", emoji:"🗼", upright:"突变，摧毁，启示，真相大白。", reversed:"逃避灾难，恐惧，内乱。" },
+  { name:"星星", emoji:"⭐", upright:"希望，灵感，疗愈，宁静。", reversed:"失望，失去信心，缺乏灵感。" },
+  { name:"月亮", emoji:"🌙", upright:"幻觉，恐惧，潜意识，不安。", reversed:"清醒，克服恐惧，揭露真相。" },
+  { name:"太阳", emoji:"☀️", upright:"快乐，成功，活力，清晰。", reversed:"暂时挫折，忧伤，虚假乐观。" },
+  { name:"审判", emoji:"📯", upright:"复活，召唤，内在觉醒，宽恕。", reversed:"自我怀疑，拒绝改变，遗憾。" },
+  { name:"世界", emoji:"🌍", upright:"完成，圆满，旅行，成就。", reversed:"未完成，停滞，延迟。" }
+];
+let currentMode = 'single';
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.controls .btn').forEach(b => b.classList.remove('active'));
+  if(mode === 'single') document.querySelector('.controls .btn').classList.add('active');
+  else document.getElementById('threeBtn').classList.add('active');
+  document.getElementById('cardArea').innerHTML = '<div style="opacity:0.6; font-size:1.1rem;">✨ 点击下方按钮抽牌 ✨</div>';
+}
+function drawCards() {
+  if(currentMode === 'sing
